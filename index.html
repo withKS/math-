@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Japan Math Game</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5dc;
+      color: #222;
+      text-align: center;
+      padding: 40px;
+    }
+    .japan {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+    #question {
+      font-size: 1.5em;
+      margin: 20px 0;
+    }
+    #score {
+      font-weight: bold;
+      margin: 10px;
+    }
+    input[type="number"] {
+      font-size: 1em;
+      padding: 5px;
+      width: 80px;
+      text-align: center;
+    }
+    button {
+      font-size: 1em;
+      padding: 6px 18px;
+      margin-top: 10px;
+      cursor: pointer;
+      background: #e0c193;
+      border: none;
+      border-radius: 6px;
+    }
+    #feedback {
+      margin: 18px 0;
+      font-size: 1.3em;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="japan">🇯🇵 日本の数学ゲーム 🇯🇵</div>
+  <div id="score">Score: 0</div>
+  <div id="question">Loading...</div>
+  <input id="answer" type="number" placeholder="Your answer">
+  <button id="submit">Answer</button>
+  <div id="feedback"></div>
+  <button id="next" style="display:none;">Next Question</button>
+  <script>
+    const questions = [
+      {op: '+', text: 'plus'},
+      {op: '-', text: 'minus'},
+      {op: '×', text: 'times'}
+    ];
+
+    let score = 0;
+    let currentAnswer = 0;
+
+    function randomQuestion() {
+      const a = Math.floor(Math.random() * 21) + 1;
+      const b = Math.floor(Math.random() * 21) + 1;
+      const type = questions[Math.floor(Math.random() * questions.length)];
+      let questionText = '';
+      let answer = 0;
+
+      if (type.op === '+') {
+        questionText = `${a} ${type.text} ${b}`;
+        answer = a + b;
+      } else if (type.op === '-') {
+        questionText = `${a} ${type.text} ${b}`;
+        answer = a - b;
+      } else {
+        questionText = `${a} ${type.text} ${b}`;
+        answer = a * b;
+      }
+
+      document.getElementById('question').textContent = `What is ${questionText}?`;
+      currentAnswer = answer;
+      document.getElementById('answer').value = '';
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('next').style.display = 'none';
+      document.getElementById('submit').style.display = '';
+    }
+
+    function showFeedback(isCorrect) {
+      const feedback = document.getElementById('feedback');
+      if (isCorrect) {
+        feedback.textContent = '正解！🎉 (Seikai: Correct!)';
+        feedback.style.color = 'green';
+      } else {
+        feedback.textContent = '違います... 😢 (Chigaimasu: Incorrect...)';
+        feedback.style.color = 'red';
+      }
+    }
+
+    document.getElementById('submit').onclick = function() {
+      const userAns = parseInt(document.getElementById('answer').value, 10);
+      if (isNaN(userAns)) {
+        document.getElementById('feedback').textContent = 'Please enter a number!';
+        document.getElementById('feedback').style.color = 'orange';
+        return;
+      }
+      if (userAns === currentAnswer) {
+        score++;
+        showFeedback(true);
+      } else {
+        showFeedback(false);
+      }
+      document.getElementById('score').textContent = `Score: ${score}`;
+      document.getElementById('next').style.display = '';
+      document.getElementById('submit').style.display = 'none';
+    };
+
+    document.getElementById('next').onclick = function() {
+      randomQuestion();
+    };
+
+    randomQuestion();
+  </script>
+</body>
+</html>
